@@ -110,6 +110,42 @@ function showReadonlyScenario(content) {
     readonlyScenario.innerHTML = gherkinToHtml(content);
 }
 
+// --- Tema Toggle ---
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeIconDetail = document.getElementById('theme-icon-detail');
+
+function setTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.querySelector('circle').setAttribute('fill', '#fffbe6');
+        themeIcon.querySelector('circle').setAttribute('stroke', '#ffb400');
+        themeIconDetail.setAttribute('d', 'M14 4a10 10 0 1 0 0 20V4z'); // moon
+        themeIconDetail.setAttribute('fill', '#ffb400');
+    } else {
+        document.body.classList.remove('light-theme');
+        themeIcon.querySelector('circle').setAttribute('fill', '#23272b');
+        themeIcon.querySelector('circle').setAttribute('stroke', '#ffb400');
+        themeIconDetail.setAttribute('d', ''); // sun
+        themeIconDetail.setAttribute('fill', '#ffb400');
+    }
+    localStorage.setItem('theme', theme);
+}
+
+function toggleTheme() {
+    const isLight = document.body.classList.contains('light-theme');
+    setTheme(isLight ? 'dark' : 'light');
+}
+
+themeToggleBtn.addEventListener('click', toggleTheme);
+
+// Load theme on page load
+(function() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') setTheme('light');
+    else setTheme('dark');
+})();
+
 // --- Event Listenerlar ---
 
 // Editörde yazarken satır başı keyword'leri otomatik büyüt
