@@ -315,3 +315,80 @@ body.light-theme #theme-toggle:hover {
     box-sizing: border-box;
 }
 
+/* Modal Styles */
+#modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 3000;
+}
+.modal {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 320px;
+}
+.modal-content {
+    background: #23272b;
+    color: #ececec;
+    padding: 32px 24px 20px 24px;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px #0008;
+    min-width: 280px;
+    max-width: 90vw;
+    text-align: center;
+}
+.modal-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+#modal-overwrite-btn, #modal-cancel-btn {
+    padding: 8px 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.18s, color 0.18s;
+}
+#modal-overwrite-btn {
+    background: #ffb400;
+    color: #23272b;
+}
+#modal-overwrite-btn:hover {
+    background: #ffc940;
+}
+#modal-cancel-btn {
+    background: #35393e;
+    color: #ececec;
+}
+#modal-cancel-btn:hover {
+    background: #ff4b5c;
+    color: #fff;
+}
+body.light-theme .modal-content {
+    background: #fffbe6;
+    color: #222;
+}
+body.light-theme #modal-cancel-btn {
+    background: #e0e0e0;
+    color: #222;
+}
+body.light-theme #modal-cancel-btn:hover {
+    background: #ff4b5c;
+    color: #fff;
+}
+body.light-theme #modal-overwrite-btn {
+    background: #ffb400;
+    color: #fff;
+}
+body.light-theme #modal-overwrite-btn:hover {
+    background: #ffc940;
+}
+
