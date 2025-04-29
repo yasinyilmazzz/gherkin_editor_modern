@@ -197,7 +197,11 @@ function showOverwriteModal(title, onConfirm) {
 
 saveBtn.addEventListener('click', function () {
     const content = editor.value.trim();
-    if (!content) return;
+    // Prevent saving if editor is empty or only 'Scenario:' (with or without spaces)
+    if (!content || /^Scenario:\s*$/i.test(content)) {
+        alert('Senaryo başlığı ve adımları girilmeden kaydedilemez!');
+        return;
+    }
     const title = extractTitle(content);
     let scenarios = getSavedScenarios();
     let idx = scenarios.findIndex(s => extractTitle(s.content) === title);
