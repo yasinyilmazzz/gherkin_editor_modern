@@ -52,7 +52,7 @@ function saveScenarios(scenarios) {
 // Senaryo başlığını bul (Scenario: ... satırı)
 function extractTitle(text) {
     const match = text.match(/Scenario:\s*(.*)/i);
-    return match ? match[1].trim() : 'Başlıksız';
+    return match ? match[1].trim() : 'Untitled';
 }
 
 // Senaryoları tabloya yaz
@@ -66,26 +66,43 @@ function renderScenarioList(filter = '') {
         );
     }
     scenarios.forEach((s, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${s.title}</td>
-            <td>${s.content.replace(/\n/g, '<br>')}</td>
-            <td><button data-edit="${idx}" class="edit-btn">Düzenle</button></td>
-        `;
-        // Satıra tıklanınca sağ panelde göster
-        tr.addEventListener('click', e => {
-            if (!e.target.classList.contains('edit-btn')) {
-                showReadonlyScenario(s.content);
-            }
-        });
-        // Düzenle butonu
-        tr.querySelector('.edit-btn').addEventListener('click', e => {
-            e.stopPropagation();
-            editor.value = s.content;
-            editor.focus();
-        });
-        scenarioList.appendChild(tr);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${s.title}</td>
+        <td style="text-align:center;">
+            <button data-edit="${idx}" class="icon-btn edit-btn" title="Edit">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.1 7.1c-.1.1-.2.2-.3.2l-2.1.6c-.3.1-.6-.2-.5-.5l.6-2.1c0-.1.1-.2.2-.3l7.1-7.1z" fill="#ffb400"/></svg>
+            </button>
+            <button data-delete="${idx}" class="icon-btn delete-btn" title="Delete">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M6 16a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6H6v10zm9-12h-3.5l-1-1h-3l-1 1H3v2h14V4z" fill="#ff4b5c"/></svg>
+            </button>
+        </td>
+    `;
+    // Satıra tıklanınca sağ panelde göster
+    tr.addEventListener('click', e => {
+        if (!e.target.closest('.edit-btn') && !e.target.closest('.delete-btn')) {
+            showReadonlyScenario(s.content);
+        }
     });
+    // Düzenle butonu
+    tr.querySelector('.edit-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        editor.value = s.content;
+        editor.focus();
+    });
+    // Sil butonu
+    tr.querySelector('.delete-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        if (confirm('Delete this test case?')) {
+            let scenarios = getSavedScenarios();
+            scenarios.splice(idx, 1);
+            saveScenarios(scenarios);
+            renderScenarioList(searchInput.value);
+            showReadonlyScenario('');
+        }
+    });
+    scenarioList.appendChild(tr);
+});
 }
 
 // Sağ panelde senaryoyu göster

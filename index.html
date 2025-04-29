@@ -9,21 +9,20 @@
 <body>
     <div class="container">
         <div class="main-panel">
-            <h1>Gherkin BDD Test Case Editör</h1>
+            <h1>Gherkin BDD Test Case Editor</h1>
             <textarea id="gherkin-editor" placeholder="Scenario: ...&#10;  Given ..." rows="12"></textarea>
             <div class="editor-actions">
-                <button id="save-btn">Kaydet</button>
-                <button id="export-btn">Export</button>
-                <button id="import-btn">Import</button>
-            </div>
-            <input type="text" id="search-scenarios" placeholder="Senaryo veya içerikte ara...">
+    <button id="save-btn">Save</button>
+    <button id="export-btn">Export</button>
+    <button id="import-btn">Import</button>
+</div>
+            <input type="text" id="search-scenarios" placeholder="Search in title or content...">
             <div id="scenario-list-container">
                 <table id="scenario-list">
                     <thead>
                         <tr>
-                            <th>Başlık</th>
-                            <th>İçerik</th>
-                            <th>Düzenle</th>
+                            <th>Title</th>
+                            <th style="width:70px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,11 +32,12 @@
             </div>
         </div>
         <div class="side-panel">
-            <h2>Seçili Senaryo</h2>
+            <h2>Selected Scenario</h2>
             <pre id="readonly-scenario"></pre>
         </div>
     </div>
     <input type="file" id="import-file" accept=".txt,.feature" style="display:none;" />
     <script src="script.js"></script>
+<footer class="footer">created by yasinyilmazzz @2025</footer>
 </body>
 </html>

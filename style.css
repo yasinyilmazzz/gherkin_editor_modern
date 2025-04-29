@@ -123,3 +123,63 @@ h1, h2 {
     background: #35393e;
     color: #ffb400;
 }
+
+/* Modern icon button styles for scenario list actions */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 4px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    transition: background 0.18s, box-shadow 0.18s;
+    cursor: pointer;
+    outline: none;
+    vertical-align: middle;
+    position: relative;
+}
+.icon-btn svg {
+    pointer-events: none;
+}
+.icon-btn.edit-btn:hover {
+    background: rgba(255,180,0,0.12);
+    box-shadow: 0 2px 8px #ffb40022;
+}
+.icon-btn.delete-btn:hover {
+    background: rgba(255,75,92,0.13);
+    box-shadow: 0 2px 8px #ff4b5c22;
+}
+.icon-btn:active {
+    background: #35393e;
+}
+
+/* Actions cell: horizontal layout */
+#scenario-list td[style*="text-align:center"] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.footer {
+    width: 100%;
+    background: #181a1b;
+    color: #888;
+    text-align: center;
+    padding: 18px 0 12px 0;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    border-top: 1px solid #35393e;
+}
+
+body {
+    padding-bottom: 60px; /* Prevent overlap with footer */
+}
