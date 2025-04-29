@@ -31,7 +31,8 @@ function autoCapitalizeKeywords(text) {
 
 // Tırnak içini <span class="gherkin-param"> ile sarar (HTML için)
 function highlightParams(line) {
-    return line.replace(/("[^"]*")/g, '<span class="gherkin-param">$1</span>');
+    // Hem tek hem çift tırnaklı parametreleri kapsa
+    return line.replace(/('[^']*'|"[^"]*")/g, '<span class="gherkin-param">$1</span>');
 }
 
 // Gherkin metnini HTML olarak renklendir
@@ -353,13 +354,11 @@ function showAutocomplete() {
         autocompleteBox.appendChild(div);
         autocompleteItems.push(div);
     });
-    // Position below the caret line
-    const pos = editor.selectionStart;
-    const coords = getCaretCoordinates(editor, pos);
-    const editorRect = editor.getBoundingClientRect();
-    autocompleteBox.style.left = (editorRect.left + window.scrollX + coords.left) + 'px';
-    autocompleteBox.style.top = (editorRect.top + window.scrollY + coords.top + 24) + 'px'; // 24px: line height fudge
-    autocompleteBox.style.width = Math.max(260, editorRect.width * 0.7) + 'px';
+    // Position autocomplete box always under the textarea input
+    const rect = editor.getBoundingClientRect();
+    autocompleteBox.style.left = rect.left + window.scrollX + 'px';
+    autocompleteBox.style.top = rect.bottom + window.scrollY + 'px';
+    autocompleteBox.style.width = rect.width + 'px';
     autocompleteBox.style.display = 'block';
 }
 

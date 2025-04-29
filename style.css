@@ -309,3 +309,9 @@ body.light-theme #theme-toggle:hover {
     background: #ffe066;
 }
 
+/* Ensure consistent widths for editor, search, and scenario list */
+#gherkin-editor, #search-scenarios, #scenario-list-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
