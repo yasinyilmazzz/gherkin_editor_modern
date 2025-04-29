@@ -18,11 +18,11 @@ body {
     flex-direction: column;
 }
 .side-panel {
-    flex: 1;
+    flex: 1.5;
     background: #181a1b;
     border-left: 2px solid #35393e;
     padding: 32px 24px;
-    min-width: 320px;
+    min-width: 480px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -47,6 +47,20 @@ h1, h2 {
 }
 #gherkin-editor:focus {
     border: 1.5px solid #ffb400;
+}
+#gherkin-editor {
+    width: 100%;
+    min-height: 180px;
+    background: #23272b;
+    color: #ececec;
+    border: 1px solid #35393e;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    padding: 12px;
+    margin-bottom: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border 0.2s;
 }
 .editor-actions {
     display: flex;

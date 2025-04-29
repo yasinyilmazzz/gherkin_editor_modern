@@ -245,6 +245,40 @@ function getCurrentStepPrefix() {
     return m ? m[2] : '';
 }
 
+function getCaretCoordinates(element, position) {
+    // Create a hidden div to mirror the textarea
+    const div = document.createElement('div');
+    const style = getComputedStyle(element);
+    for (const prop of [
+        'boxSizing','width','height','overflowX','overflowY','borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth',
+        'paddingTop','paddingRight','paddingBottom','paddingLeft','fontStyle','fontVariant','fontWeight','fontStretch','fontSize','fontSizeAdjust','lineHeight','fontFamily','textAlign','textTransform','textIndent','textDecoration','letterSpacing','wordSpacing']) {
+        div.style[prop] = style[prop];
+    }
+    div.style.position = 'absolute';
+    div.style.visibility = 'hidden';
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.wordWrap = 'break-word';
+    div.style.left = element.offsetLeft + 'px';
+    div.style.top = element.offsetTop + 'px';
+    div.style.zIndex = -9999;
+    div.style.background = 'transparent';
+    div.style.pointerEvents = 'none';
+    div.textContent = element.value.substring(0, position);
+    // Place a marker span at the caret
+    const span = document.createElement('span');
+    span.textContent = element.value.substring(position) || '.';
+    div.appendChild(span);
+    document.body.appendChild(div);
+    const rect = span.getBoundingClientRect();
+    const parentRect = element.getBoundingClientRect();
+    const coords = {
+        top: rect.top - parentRect.top + element.scrollTop,
+        left: rect.left - parentRect.left + element.scrollLeft
+    };
+    document.body.removeChild(div);
+    return coords;
+}
+
 function showAutocomplete() {
     const prefix = getCurrentStepPrefix().toLowerCase();
     if (!prefix) {
@@ -275,13 +309,16 @@ function showAutocomplete() {
         autocompleteBox.appendChild(div);
         autocompleteItems.push(div);
     });
-    // Pozisyonla (editörün altına hizala)
-    const rect = editor.getBoundingClientRect();
-    autocompleteBox.style.left = rect.left + window.scrollX + 'px';
-    autocompleteBox.style.top = rect.bottom + window.scrollY + 'px';
-    autocompleteBox.style.width = rect.width + 'px';
+    // Position below the caret line
+    const pos = editor.selectionStart;
+    const coords = getCaretCoordinates(editor, pos);
+    const editorRect = editor.getBoundingClientRect();
+    autocompleteBox.style.left = (editorRect.left + window.scrollX + coords.left) + 'px';
+    autocompleteBox.style.top = (editorRect.top + window.scrollY + coords.top + 24) + 'px'; // 24px: line height fudge
+    autocompleteBox.style.width = Math.max(260, editorRect.width * 0.7) + 'px';
     autocompleteBox.style.display = 'block';
 }
+
 
 function hideAutocomplete() {
     autocompleteBox.style.display = 'none';
@@ -324,9 +361,11 @@ editor.addEventListener('keydown', (e) => {
             autocompleteSelectedIdx = (autocompleteSelectedIdx - 1 + autocompleteItems.length) % autocompleteItems.length;
             updateAutocompleteSelection();
         } else if (e.key === 'Enter') {
+            e.preventDefault();
             if (autocompleteSelectedIdx >= 0 && autocompleteSelectedIdx < autocompleteItems.length) {
-                e.preventDefault();
                 autocompleteItems[autocompleteSelectedIdx].dispatchEvent(new MouseEvent('mousedown'));
+            } else if (autocompleteItems.length > 0) {
+                autocompleteItems[0].dispatchEvent(new MouseEvent('mousedown'));
             }
         } else if (e.key === 'Escape') {
             hideAutocomplete();
