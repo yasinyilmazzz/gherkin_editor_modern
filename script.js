@@ -52,7 +52,7 @@ function saveScenarios(scenarios) {
 // Senaryo başlığını bul (Scenario: ... satırı)
 function extractTitle(text) {
     const match = text.match(/Scenario:\s*(.*)/i);
-    return match ? match[1].trim() : 'Başlıksız';
+    return match ? match[1].trim() : 'Untitled';
 }
 
 // Senaryoları tabloya yaz
@@ -66,32 +66,85 @@ function renderScenarioList(filter = '') {
         );
     }
     scenarios.forEach((s, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${s.title}</td>
-            <td>${s.content.replace(/\n/g, '<br>')}</td>
-            <td><button data-edit="${idx}" class="edit-btn">Düzenle</button></td>
-        `;
-        // Satıra tıklanınca sağ panelde göster
-        tr.addEventListener('click', e => {
-            if (!e.target.classList.contains('edit-btn')) {
-                showReadonlyScenario(s.content);
-            }
-        });
-        // Düzenle butonu
-        tr.querySelector('.edit-btn').addEventListener('click', e => {
-            e.stopPropagation();
-            editor.value = s.content;
-            editor.focus();
-        });
-        scenarioList.appendChild(tr);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${s.title}</td>
+        <td style="text-align:center;">
+            <button data-edit="${idx}" class="icon-btn edit-btn" title="Edit">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.1 7.1c-.1.1-.2.2-.3.2l-2.1.6c-.3.1-.6-.2-.5-.5l.6-2.1c0-.1.1-.2.2-.3l7.1-7.1z" fill="#ffb400"/></svg>
+            </button>
+            <button data-delete="${idx}" class="icon-btn delete-btn" title="Delete">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M6 16a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6H6v10zm9-12h-3.5l-1-1h-3l-1 1H3v2h14V4z" fill="#ff4b5c"/></svg>
+            </button>
+        </td>
+    `;
+    // Satıra tıklanınca sağ panelde göster
+    tr.addEventListener('click', e => {
+        if (!e.target.closest('.edit-btn') && !e.target.closest('.delete-btn')) {
+            showReadonlyScenario(s.content);
+        }
     });
+    // Düzenle butonu
+    tr.querySelector('.edit-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        editor.value = s.content;
+        editor.focus();
+    });
+    // Sil butonu
+    tr.querySelector('.delete-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        if (confirm('Delete this test case?')) {
+            let scenarios = getSavedScenarios();
+            scenarios.splice(idx, 1);
+            saveScenarios(scenarios);
+            renderScenarioList(searchInput.value);
+            showReadonlyScenario('');
+        }
+    });
+    scenarioList.appendChild(tr);
+});
 }
 
 // Sağ panelde senaryoyu göster
 function showReadonlyScenario(content) {
     readonlyScenario.innerHTML = gherkinToHtml(content);
 }
+
+// --- Tema Toggle ---
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeIconDetail = document.getElementById('theme-icon-detail');
+
+function setTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        themeIcon.querySelector('circle').setAttribute('fill', '#fffbe6');
+        themeIcon.querySelector('circle').setAttribute('stroke', '#ffb400');
+        themeIconDetail.setAttribute('d', 'M14 4a10 10 0 1 0 0 20V4z'); // moon
+        themeIconDetail.setAttribute('fill', '#ffb400');
+    } else {
+        document.body.classList.remove('light-theme');
+        themeIcon.querySelector('circle').setAttribute('fill', '#23272b');
+        themeIcon.querySelector('circle').setAttribute('stroke', '#ffb400');
+        themeIconDetail.setAttribute('d', ''); // sun
+        themeIconDetail.setAttribute('fill', '#ffb400');
+    }
+    localStorage.setItem('theme', theme);
+}
+
+function toggleTheme() {
+    const isLight = document.body.classList.contains('light-theme');
+    setTheme(isLight ? 'dark' : 'light');
+}
+
+themeToggleBtn.addEventListener('click', toggleTheme);
+
+// Load theme on page load
+(function() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') setTheme('light');
+    else setTheme('dark');
+})();
 
 // --- Event Listenerlar ---
 
@@ -103,6 +156,14 @@ editor.addEventListener('input', (e) => {
         editor.value = after;
     }
     showAutocomplete();
+});
+
+// New butonu
+const newBtn = document.getElementById('new-btn');
+newBtn.addEventListener('click', () => {
+    editor.value = 'Scenario: ';
+    hideAutocomplete();
+    editor.focus();
 });
 
 // Kaydet butonu
@@ -228,6 +289,40 @@ function getCurrentStepPrefix() {
     return m ? m[2] : '';
 }
 
+function getCaretCoordinates(element, position) {
+    // Create a hidden div to mirror the textarea
+    const div = document.createElement('div');
+    const style = getComputedStyle(element);
+    for (const prop of [
+        'boxSizing','width','height','overflowX','overflowY','borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth',
+        'paddingTop','paddingRight','paddingBottom','paddingLeft','fontStyle','fontVariant','fontWeight','fontStretch','fontSize','fontSizeAdjust','lineHeight','fontFamily','textAlign','textTransform','textIndent','textDecoration','letterSpacing','wordSpacing']) {
+        div.style[prop] = style[prop];
+    }
+    div.style.position = 'absolute';
+    div.style.visibility = 'hidden';
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.wordWrap = 'break-word';
+    div.style.left = element.offsetLeft + 'px';
+    div.style.top = element.offsetTop + 'px';
+    div.style.zIndex = -9999;
+    div.style.background = 'transparent';
+    div.style.pointerEvents = 'none';
+    div.textContent = element.value.substring(0, position);
+    // Place a marker span at the caret
+    const span = document.createElement('span');
+    span.textContent = element.value.substring(position) || '.';
+    div.appendChild(span);
+    document.body.appendChild(div);
+    const rect = span.getBoundingClientRect();
+    const parentRect = element.getBoundingClientRect();
+    const coords = {
+        top: rect.top - parentRect.top + element.scrollTop,
+        left: rect.left - parentRect.left + element.scrollLeft
+    };
+    document.body.removeChild(div);
+    return coords;
+}
+
 function showAutocomplete() {
     const prefix = getCurrentStepPrefix().toLowerCase();
     if (!prefix) {
@@ -258,13 +353,16 @@ function showAutocomplete() {
         autocompleteBox.appendChild(div);
         autocompleteItems.push(div);
     });
-    // Pozisyonla (editörün altına hizala)
-    const rect = editor.getBoundingClientRect();
-    autocompleteBox.style.left = rect.left + window.scrollX + 'px';
-    autocompleteBox.style.top = rect.bottom + window.scrollY + 'px';
-    autocompleteBox.style.width = rect.width + 'px';
+    // Position below the caret line
+    const pos = editor.selectionStart;
+    const coords = getCaretCoordinates(editor, pos);
+    const editorRect = editor.getBoundingClientRect();
+    autocompleteBox.style.left = (editorRect.left + window.scrollX + coords.left) + 'px';
+    autocompleteBox.style.top = (editorRect.top + window.scrollY + coords.top + 24) + 'px'; // 24px: line height fudge
+    autocompleteBox.style.width = Math.max(260, editorRect.width * 0.7) + 'px';
     autocompleteBox.style.display = 'block';
 }
+
 
 function hideAutocomplete() {
     autocompleteBox.style.display = 'none';
@@ -307,9 +405,11 @@ editor.addEventListener('keydown', (e) => {
             autocompleteSelectedIdx = (autocompleteSelectedIdx - 1 + autocompleteItems.length) % autocompleteItems.length;
             updateAutocompleteSelection();
         } else if (e.key === 'Enter') {
+            e.preventDefault();
             if (autocompleteSelectedIdx >= 0 && autocompleteSelectedIdx < autocompleteItems.length) {
-                e.preventDefault();
                 autocompleteItems[autocompleteSelectedIdx].dispatchEvent(new MouseEvent('mousedown'));
+            } else if (autocompleteItems.length > 0) {
+                autocompleteItems[0].dispatchEvent(new MouseEvent('mousedown'));
             }
         } else if (e.key === 'Escape') {
             hideAutocomplete();

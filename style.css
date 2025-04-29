@@ -5,6 +5,33 @@ body {
     margin: 0;
     padding: 0;
 }
+
+#theme-toggle {
+    position: fixed;
+    top: 18px;
+    right: 28px;
+    z-index: 2000;
+    background: #23272b;
+    border: 1.5px solid #35393e;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px #0004;
+}
+#theme-toggle:hover {
+    background: #35393e;
+    box-shadow: 0 4px 12px #0008;
+}
+#theme-toggle svg {
+    pointer-events: none;
+    display: block;
+}
+
 .container {
     display: flex;
     flex-direction: row;
@@ -18,11 +45,11 @@ body {
     flex-direction: column;
 }
 .side-panel {
-    flex: 1;
+    flex: 1.5;
     background: #181a1b;
     border-left: 2px solid #35393e;
     padding: 32px 24px;
-    min-width: 320px;
+    min-width: 480px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -47,6 +74,20 @@ h1, h2 {
 }
 #gherkin-editor:focus {
     border: 1.5px solid #ffb400;
+}
+#gherkin-editor {
+    width: 100%;
+    min-height: 180px;
+    background: #23272b;
+    color: #ececec;
+    border: 1px solid #35393e;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    padding: 12px;
+    margin-bottom: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border 0.2s;
 }
 .editor-actions {
     display: flex;
@@ -123,3 +164,148 @@ h1, h2 {
     background: #35393e;
     color: #ffb400;
 }
+
+/* Modern icon button styles for scenario list actions */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 4px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    transition: background 0.18s, box-shadow 0.18s;
+    cursor: pointer;
+    outline: none;
+    vertical-align: middle;
+    position: relative;
+}
+.icon-btn svg {
+    pointer-events: none;
+}
+.icon-btn.edit-btn:hover {
+    background: rgba(255,180,0,0.12);
+    box-shadow: 0 2px 8px #ffb40022;
+}
+.icon-btn.delete-btn:hover {
+    background: rgba(255,75,92,0.13);
+    box-shadow: 0 2px 8px #ff4b5c22;
+}
+.icon-btn:active {
+    background: #35393e;
+}
+
+/* Actions cell: horizontal layout */
+#scenario-list td[style*="text-align:center"] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.footer {
+    width: 100%;
+    background: #181a1b;
+    color: #888;
+    text-align: center;
+    padding: 18px 0 12px 0;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    border-top: 1px solid #35393e;
+}
+
+body {
+    padding-bottom: 60px; /* Prevent overlap with footer */
+}
+
+/* Light Theme Styles */
+body.light-theme {
+    background: #fffbe6;
+    color: #222;
+}
+body.light-theme .main-panel {
+    background: #fff;
+}
+body.light-theme .side-panel {
+    background: #f5f5f5;
+    border-left: 2px solid #e0e0e0;
+}
+body.light-theme #gherkin-editor,
+body.light-theme #search-scenarios {
+    background: #fff;
+    color: #222;
+    border: 1px solid #e0e0e0;
+}
+body.light-theme #gherkin-editor:focus {
+    border: 1.5px solid #ffb400;
+}
+body.light-theme .editor-actions button {
+    background: #fff;
+    color: #ffb400;
+    border: 1px solid #e0e0e0;
+}
+body.light-theme .editor-actions button:hover {
+    background: #ffb400;
+    color: #fff;
+}
+body.light-theme #scenario-list {
+    background: #fff;
+}
+body.light-theme #scenario-list th, body.light-theme #scenario-list td {
+    border: 1px solid #e0e0e0;
+    color: #222;
+}
+body.light-theme #scenario-list th {
+    background: #fff;
+    color: #ffb400;
+}
+body.light-theme #scenario-list tr:hover {
+    background: #f7f7e8;
+}
+body.light-theme #readonly-scenario {
+    background: #fff;
+    color: #222;
+    border: 1px solid #e0e0e0;
+}
+body.light-theme #autocomplete-box {
+    background: #fffbe6;
+    border: 1px solid #e0e0e0;
+    color: #222;
+}
+body.light-theme #autocomplete-box .autocomplete-item.selected,
+body.light-theme #autocomplete-box .autocomplete-item:hover {
+    background: #ffe066;
+    color: #b07d00;
+}
+body.light-theme .icon-btn {
+    background: none;
+    border: none;
+}
+body.light-theme .icon-btn.edit-btn:hover {
+    background: #ffe06655;
+    box-shadow: 0 2px 8px #ffb40022;
+}
+body.light-theme .icon-btn.delete-btn:hover {
+    background: #ffb4b455;
+    box-shadow: 0 2px 8px #ff4b5c22;
+}
+body.light-theme .footer {
+    background: #f5f5f5;
+    color: #888;
+    border-top: 1px solid #e0e0e0;
+}
+body.light-theme #theme-toggle {
+    background: #fffbe6;
+    border: 1.5px solid #e0e0e0;
+}
+body.light-theme #theme-toggle:hover {
+    background: #ffe066;
+}
+
