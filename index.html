@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gherkin BDD Test Case Editör</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-panel">
+            <h1>Gherkin BDD Test Case Editör</h1>
+            <textarea id="gherkin-editor" placeholder="Scenario: ...&#10;  Given ..." rows="12"></textarea>
+            <div class="editor-actions">
+                <button id="save-btn">Kaydet</button>
+                <button id="export-btn">Export</button>
+                <button id="import-btn">Import</button>
+            </div>
+            <input type="text" id="search-scenarios" placeholder="Senaryo veya içerikte ara...">
+            <div id="scenario-list-container">
+                <table id="scenario-list">
+                    <thead>
+                        <tr>
+                            <th>Başlık</th>
+                            <th>İçerik</th>
+                            <th>Düzenle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Senaryolar buraya gelecek -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="side-panel">
+            <h2>Seçili Senaryo</h2>
+            <pre id="readonly-scenario"></pre>
+        </div>
+    </div>
+    <input type="file" id="import-file" accept=".txt,.feature" style="display:none;" />
+    <script src="script.js"></script>
+</body>
+</html>

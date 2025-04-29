@@ -1,0 +1,125 @@
+body {
+    background: #23272b;
+    color: #ececec;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+.main-panel {
+    flex: 2;
+    padding: 32px 24px 24px 48px;
+    background: #2c2f34;
+    display: flex;
+    flex-direction: column;
+}
+.side-panel {
+    flex: 1;
+    background: #181a1b;
+    border-left: 2px solid #35393e;
+    padding: 32px 24px;
+    min-width: 320px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+h1, h2 {
+    color: #ffb400;
+    font-weight: 600;
+}
+#gherkin-editor {
+    width: 100%;
+    min-height: 180px;
+    background: #23272b;
+    color: #ececec;
+    border: 1px solid #35393e;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    padding: 12px;
+    margin-bottom: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border 0.2s;
+}
+#gherkin-editor:focus {
+    border: 1.5px solid #ffb400;
+}
+.editor-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.editor-actions button {
+    background: #23272b;
+    color: #ffb400;
+    border: 1px solid #35393e;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.editor-actions button:hover {
+    background: #ffb400;
+    color: #23272b;
+}
+#search-scenarios {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #23272b;
+    color: #ececec;
+    border: 1px solid #35393e;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+#scenario-list-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+#scenario-list {
+    width: 100%;
+    border-collapse: collapse;
+    background: #23272b;
+}
+#scenario-list th, #scenario-list td {
+    border: 1px solid #35393e;
+    padding: 8px 6px;
+    color: #ececec;
+}
+#scenario-list th {
+    background: #23272b;
+    color: #ffb400;
+}
+#scenario-list tr:hover {
+    background: #35393e;
+}
+#readonly-scenario {
+    background: #23272b;
+    color: #ececec;
+    border-radius: 6px;
+    padding: 18px;
+    font-size: 1.05rem;
+    min-height: 200px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: 1px solid #35393e;
+}
+::-webkit-scrollbar {
+    width: 8px;
+    background: #23272b;
+}
+::-webkit-scrollbar-thumb {
+    background: #35393e;
+    border-radius: 4px;
+}
+
+#autocomplete-box .autocomplete-item.selected {
+    background: #35393e;
+    color: #ffb400;
+}
