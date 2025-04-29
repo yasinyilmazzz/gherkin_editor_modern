@@ -122,6 +122,14 @@ editor.addEventListener('input', (e) => {
     showAutocomplete();
 });
 
+// New butonu
+const newBtn = document.getElementById('new-btn');
+newBtn.addEventListener('click', () => {
+    editor.value = 'Scenario: ';
+    hideAutocomplete();
+    editor.focus();
+});
+
 // Kaydet butonu
 saveBtn.addEventListener('click', () => {
     const content = editor.value.trim();

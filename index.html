@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gherkin BDD Test Case Editör</title>
+    <link rel="icon" type="image/png" href="favicon-16x16.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="main-panel">
             <h1>Gherkin BDD Test Case Editor</h1>
-            <textarea id="gherkin-editor" placeholder="Scenario: ...&#10;  Given ..." rows="12"></textarea>
+            <textarea id="gherkin-editor" rows="12">Scenario: </textarea>
             <div class="editor-actions">
+    <button id="new-btn">New</button>
     <button id="save-btn">Save</button>
     <button id="export-btn">Export</button>
     <button id="import-btn">Import</button>
