@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <button id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+    <button id="theme-toggle" title="Light/Dark" aria-label="Light/Dark">
         <svg id="theme-icon" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="14" cy="14" r="10" stroke="#ffb400" stroke-width="2" fill="#23272b" />
             <path id="theme-icon-detail" d="M14 4a10 10 0 0 0 0 20V4z" fill="#ffb400" />
@@ -49,6 +49,16 @@
         </div>
     </div>
     <input type="file" id="import-file" accept=".txt,.feature" style="display:none;" />
+    <div id="modal-backdrop" style="display:none;"></div>
+    <div id="overwrite-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span id="modal-message"></span>
+            <div class="modal-actions">
+                <button id="modal-overwrite-btn">Overwrite</button>
+                <button id="modal-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
     <footer class="footer">
         <script async

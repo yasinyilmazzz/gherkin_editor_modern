@@ -119,15 +119,17 @@ const themeIconDetail = document.getElementById('theme-icon-detail');
 function setTheme(theme) {
     if (theme === 'light') {
         document.body.classList.add('light-theme');
+        // Sun (güneş)
         themeIcon.querySelector('circle').setAttribute('fill', '#fffbe6');
         themeIcon.querySelector('circle').setAttribute('stroke', '#ffb400');
-        themeIconDetail.setAttribute('d', 'M14 4a10 10 0 1 0 0 20V4z'); // moon
+        themeIconDetail.setAttribute('d', '');
         themeIconDetail.setAttribute('fill', '#ffb400');
     } else {
         document.body.classList.remove('light-theme');
+        // Crescent moon (hilal)
         themeIcon.querySelector('circle').setAttribute('fill', '#23272b');
         themeIcon.querySelector('circle').setAttribute('stroke', '#ffb400');
-        themeIconDetail.setAttribute('d', ''); // sun
+        themeIconDetail.setAttribute('d', 'M18 14c0 2.21-1.79 4-4 4a4 4 0 0 1 0-8c.34 0 .67.04 1 .11A6 6 0 1 0 18 14z');
         themeIconDetail.setAttribute('fill', '#ffb400');
     }
     localStorage.setItem('theme', theme);
@@ -168,22 +170,53 @@ newBtn.addEventListener('click', () => {
 });
 
 // Kaydet butonu
-saveBtn.addEventListener('click', () => {
+function showOverwriteModal(title, onConfirm) {
+    const modal = document.getElementById('overwrite-modal');
+    const backdrop = document.getElementById('modal-backdrop');
+    const msg = document.getElementById('modal-message');
+    msg.textContent = `There's already a script with the same title: "${title}". Would you like to record it?`;
+    modal.style.display = 'flex';
+    backdrop.style.display = 'block';
+
+    function cleanup() {
+        modal.style.display = 'none';
+        backdrop.style.display = 'none';
+        document.getElementById('modal-overwrite-btn').removeEventListener('click', handleOverwrite);
+        document.getElementById('modal-cancel-btn').removeEventListener('click', handleCancel);
+    }
+    function handleOverwrite() {
+        cleanup();
+        if (typeof onConfirm === 'function') onConfirm();
+    }
+    function handleCancel() {
+        cleanup();
+    }
+    document.getElementById('modal-overwrite-btn').addEventListener('click', handleOverwrite);
+    document.getElementById('modal-cancel-btn').addEventListener('click', handleCancel);
+}
+
+saveBtn.addEventListener('click', function () {
     const content = editor.value.trim();
     if (!content) return;
-    let scenarios = getSavedScenarios();
     const title = extractTitle(content);
-    // Aynı başlık varsa güncelle
-    const idx = scenarios.findIndex(s => s.title === title);
-    if (idx >= 0) {
-        scenarios[idx].content = content;
+    let scenarios = getSavedScenarios();
+    let idx = scenarios.findIndex(s => extractTitle(s.content) === title);
+    if (idx !== -1) {
+        // Show modal instead of immediate overwrite
+        showOverwriteModal(title, () => {
+            scenarios[idx].content = content;
+            saveScenarios(scenarios);
+            renderScenarioList(searchInput.value);
+            editor.value = '';
+            hideAutocomplete();
+        });
     } else {
         scenarios.push({ title, content });
+        saveScenarios(scenarios);
+        renderScenarioList(searchInput.value);
+        editor.value = '';
+        hideAutocomplete();
     }
-    saveScenarios(scenarios);
-    renderScenarioList(searchInput.value);
-    editor.value = '';
-    hideAutocomplete();
 });
 
 // Export butonu
@@ -192,9 +225,20 @@ exportBtn.addEventListener('click', () => {
     if (!scenarios.length) return;
     let content = scenarios.map(s => s.content.trim()).join('\n\n');
     const blob = new Blob([content], { type: 'text/plain' });
+    
+    const now = new Date();
+    const year = String(now.getFullYear()).slice(-2); 
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    const timestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
+    
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'test_senaryolari.feature';
+    a.download = `BDD_Editor_${timestamp}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
