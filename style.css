@@ -35,7 +35,7 @@ body {
 .container {
     display: flex;
     flex-direction: row;
-    height: 100vh;
+    min-height: 100vh;
 }
 .main-panel {
     flex: 2;
