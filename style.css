@@ -54,6 +54,9 @@ body {
     display: flex;
     flex-direction: column;
 }
+.gherkin-comment {
+    color: lightgreen;
+  }
 h1, h2 {
     color: #ffb400;
     font-weight: 600;
