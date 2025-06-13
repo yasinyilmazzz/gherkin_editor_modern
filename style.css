@@ -210,6 +210,39 @@ h1, h2 {
 }
 
 .footer {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #23272b;
+    color: #ececec;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.footer .footer-text {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.footer .footer-icons {
+    display: flex;
+    align-items: center;
+}
+
+.footer .footer-icons a {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.footer .footer-icons img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+.footer {
     width: 100%;
     background: #181a1b;
     color: #888;
