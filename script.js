@@ -35,10 +35,40 @@ function highlightParams(line) {
     return line.replace(/('[^']*'|"[^"]*")/g, '<span class="gherkin-param">$1</span>');
 }
 
-// Gherkin metnini HTML olarak renklendir
-function gherkinToHtml(text) {
-    return text.split('\n').map(line => highlightParams(line)).join('\n');
-}
+// Highlights lines starting with # as comments
+function highlightComments(line) {
+    if (line.trim().startsWith('#')) {
+      return `<span class="gherkin-comment">${line}</span>`;
+    }
+    return line;
+  }
+
+// Gherkin anahtar kelimelerini kalın yapar
+function highlightGherkinKeywords(line) {
+    // Satır başındaki anahtar kelimeler
+    const keywords = ['Scenario:','Given', 'When', 'Then', 'And', 'But', '\\*']; 
+    
+    // Her bir anahtar kelime için kontrol et
+    for (const keyword of keywords) {
+      // Regex'i oluştur: satırın başında kelime (büyük/küçük harf duyarsız)
+      const regex = new RegExp(`^(${keyword})`, 'i'); 
+      if (regex.test(line.trim())) {
+        // Eşleşen kelimeyi <strong> etiketiyle sar
+        return line.trim().replace(regex, '<strong><u>$1</u></strong>') + (line.endsWith(' ') ? ' ' : '');
+      }
+    }
+    return line;
+  }
+  
+  // Gherkin metnini HTML olarak renklendir (güncellenmiş)
+  function gherkinToHtml(text) {
+    return text.split('\n').map(line => {
+      let processedLine = highlightParams(line); // Mevcut parametre vurgulama
+      processedLine = highlightComments(processedLine); // Mevcut yorum vurgulama
+      processedLine = highlightGherkinKeywords(processedLine); // Yeni anahtar kelime vurgulama
+      return processedLine;
+    }).join('\n');
+  }
 
 // Kaydedilmiş senaryoları localStorage'dan getir
 function getSavedScenarios() {
