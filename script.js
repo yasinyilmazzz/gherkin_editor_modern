@@ -38,37 +38,53 @@ function highlightParams(line) {
 // Highlights lines starting with # as comments
 function highlightComments(line) {
     if (line.trim().startsWith('#')) {
-      return `<span class="gherkin-comment">${line}</span>`;
+        return `<span class="gherkin-comment">${line.replace(/#/g, '&#35;') }</span>`;
     }
     return line;
-  }
+}
 
 // Gherkin anahtar kelimelerini kalın yapar
 function highlightGherkinKeywords(line) {
     // Satır başındaki anahtar kelimeler
-    const keywords = ['Scenario:','Given', 'When', 'Then', 'And', 'But', '\\*']; 
-    
+    const keywords = ['Scenario:', 'Given', 'When', 'Then', 'And', 'But', '\*'];
+
     // Her bir anahtar kelime için kontrol et
     for (const keyword of keywords) {
-      // Regex'i oluştur: satırın başında kelime (büyük/küçük harf duyarsız)
-      const regex = new RegExp(`^(${keyword})`, 'i'); 
-      if (regex.test(line.trim())) {
-        // Eşleşen kelimeyi <strong> etiketiyle sar
-        return line.trim().replace(regex, '<strong><u>$1</u></strong>') + (line.endsWith(' ') ? ' ' : '');
-      }
+        // Regex'i oluştur: satırın başında kelime (büyük/küçük harf duyarsız)
+        const regex = new RegExp(`^(${keyword.replace(/\*/g, '\\*')})`, 'i');
+        if (regex.test(line.trim())) {
+            // Eşleşen kelimeyi <strong> etiketiyle sar
+            const underlinedKeyword = underlineKeywords ? `<strong><u>$1</u></strong>` : `<strong>$1</strong>`;
+            return line.trim().replace(regex, underlinedKeyword) + (line.endsWith(' ') ? ' ' : '');
+        }
     }
     return line;
-  }
-  
-  // Gherkin metnini HTML olarak renklendir (güncellenmiş)
-  function gherkinToHtml(text) {
+}
+
+// Gherkin metnini HTML olarak renklendir (güncellenmiş)
+function gherkinToHtml(text) {
     return text.split('\n').map(line => {
-      let processedLine = highlightParams(line); // Mevcut parametre vurgulama
-      processedLine = highlightComments(processedLine); // Mevcut yorum vurgulama
-      processedLine = highlightGherkinKeywords(processedLine); // Yeni anahtar kelime vurgulama
-      return processedLine;
+        let processedLine = highlightParams(line); // Mevcut parametre vurgulama
+        processedLine = highlightComments(processedLine); // Mevcut yorum vurgulama
+        processedLine = highlightGherkinKeywords(processedLine); // Yeni anahtar kelime vurgulama
+        return processedLine;
     }).join('\n');
-  }
+}
+
+// Checkbox'ı seç
+const underlineKeywordsCheckbox = document.getElementById('underline-keywords-checkbox');
+
+// Başlangıçta underline açık mı? (localStorage'dan oku veya varsayılan olarak açık yap)
+let underlineKeywords = localStorage.getItem('underlineKeywords') === 'true' ? true : false;
+underlineKeywordsCheckbox.checked = underlineKeywords;
+
+// Checkbox değişince
+underlineKeywordsCheckbox.addEventListener('change', () => {
+    underlineKeywords = underlineKeywordsCheckbox.checked;
+    localStorage.setItem('underlineKeywords', underlineKeywords);
+    // Senaryoyu tekrar render et
+    showReadonlyScenario(readonlyScenario.textContent);
+});
 
 // Kaydedilmiş senaryoları localStorage'dan getir
 function getSavedScenarios() {
@@ -97,43 +113,43 @@ function renderScenarioList(filter = '') {
         );
     }
     scenarios.forEach((s, idx) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-        <td>${s.title}</td>
-        <td style="text-align:center;">
-            <button data-edit="${idx}" class="icon-btn edit-btn" title="Edit">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.1 7.1c-.1.1-.2.2-.3.2l-2.1.6c-.3.1-.6-.2-.5-.5l.6-2.1c0-.1.1-.2.2-.3l7.1-7.1z" fill="#ffb400"/></svg>
-            </button>
-            <button data-delete="${idx}" class="icon-btn delete-btn" title="Delete">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M6 16a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6H6v10zm9-12h-3.5l-1-1h-3l-1 1H3v2h14V4z" fill="#ff4b5c"/></svg>
-            </button>
-        </td>
-    `;
-    // Satıra tıklanınca sağ panelde göster
-    tr.addEventListener('click', e => {
-        if (!e.target.closest('.edit-btn') && !e.target.closest('.delete-btn')) {
-            showReadonlyScenario(s.content);
-        }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${s.title}</td>
+            <td style="text-align:center;">
+                <button data-edit="${idx}" class="icon-btn edit-btn" title="Edit">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.1 7.1c-.1.1-.2.2-.3.2l-2.1.6c-.3.1-.6-.2-.5-.5l.6-2.1c0-.1.1-.2.2-.3l7.1-7.1z" fill="#ffb400"/></svg>
+                </button>
+                <button data-delete="${idx}" class="icon-btn delete-btn" title="Delete">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><path d="M6 16a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6H6v10zm9-12h-3.5l-1-1h-3l-1 1H3v2h14V4z" fill="#ff4b5c"/></svg>
+                </button>
+            </td>
+        `;
+        // Satıra tıklanınca sağ panelde göster
+        tr.addEventListener('click', e => {
+            if (!e.target.closest('.edit-btn') && !e.target.closest('.delete-btn')) {
+                showReadonlyScenario(s.content);
+            }
+        });
+        // Düzenle butonu
+        tr.querySelector('.edit-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            editor.value = s.content;
+            editor.focus();
+        });
+        // Sil butonu
+        tr.querySelector('.delete-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            if (confirm('Delete this test case?')) {
+                let scenarios = getSavedScenarios();
+                scenarios.splice(idx, 1);
+                saveScenarios(scenarios);
+                renderScenarioList(searchInput.value);
+                showReadonlyScenario('');
+            }
+        });
+        scenarioList.appendChild(tr);
     });
-    // Düzenle butonu
-    tr.querySelector('.edit-btn').addEventListener('click', e => {
-        e.stopPropagation();
-        editor.value = s.content;
-        editor.focus();
-    });
-    // Sil butonu
-    tr.querySelector('.delete-btn').addEventListener('click', e => {
-        e.stopPropagation();
-        if (confirm('Delete this test case?')) {
-            let scenarios = getSavedScenarios();
-            scenarios.splice(idx, 1);
-            saveScenarios(scenarios);
-            renderScenarioList(searchInput.value);
-            showReadonlyScenario('');
-        }
-    });
-    scenarioList.appendChild(tr);
-});
 }
 
 // Sağ panelde senaryoyu göster
@@ -504,7 +520,6 @@ function updateAutocompleteSelection() {
         }
     });
 }
-
 
 // --- CSS ile parametre renklendirme için stil ekle ---
 (function addParamStyle() {
