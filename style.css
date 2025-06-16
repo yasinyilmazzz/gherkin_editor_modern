@@ -98,6 +98,9 @@ h1, h2 {
     background: #ffb400;
     color: #23272b;
 }
+.keyword-color{
+    color: rgb(51, 185, 247);
+}
 #search-scenarios {
     width: 100%;
     margin-bottom: 10px;
@@ -150,10 +153,10 @@ html,body,.container,.main-panel,.side-panel{
 }
 ::-webkit-scrollbar {
     width: 8px;
-    background: #23272b;
+    background: #41454742;
 }
 ::-webkit-scrollbar-thumb {
-    background: #35393e;
+    background: #ffb400;
     border-radius: 4px;
 }
 

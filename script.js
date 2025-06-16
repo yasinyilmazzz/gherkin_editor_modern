@@ -54,7 +54,7 @@ function highlightGherkinKeywords(line) {
         const regex = new RegExp(`^(${keyword.replace(/\*/g, '\\*')})`, 'i');
         if (regex.test(line.trim())) {
             // Eşleşen kelimeyi <strong> etiketiyle sar
-            const underlinedKeyword = underlineKeywords ? `<strong><u>$1</u></strong>` : `<strong>$1</strong>`;
+            const underlinedKeyword = underlineKeywords ? `<strong class=keyword-color><u>$1</u></strong >` : `<strong class=keyword-color>$1</strong>`;
             return line.trim().replace(regex, underlinedKeyword) + (line.endsWith(' ') ? ' ' : '');
         }
     }
