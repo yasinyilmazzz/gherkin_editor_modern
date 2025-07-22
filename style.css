@@ -424,4 +424,13 @@ body.light-theme #modal-overwrite-btn {
 body.light-theme #modal-overwrite-btn:hover {
     background: #ffc940;
 }
+.clear-link {
+    cursor: pointer;
+    color: #ffb400;
+    transition: all 0.2s ease;
+}
 
+.clear-link:hover {
+    text-decoration: underline;
+    color: #f44336; /* Kırmızıya dönüşür */
+}
