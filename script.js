@@ -13,6 +13,7 @@ const importFileInput = document.getElementById('import-file');
 const scenarioList = document.getElementById('scenario-list').getElementsByTagName('tbody')[0];
 const readonlyScenario = document.getElementById('readonly-scenario');
 const searchInput = document.getElementById('search-scenarios');
+const clearAll = document.getElementById('clear-all');
 
 // --- Yardımcı Fonksiyonlar ---
 
@@ -94,6 +95,7 @@ function getSavedScenarios() {
 // Senaryoları kaydet
 function saveScenarios(scenarios) {
     localStorage.setItem('gherkin_scenarios', JSON.stringify(scenarios));
+    updateScenarioCount();
 }
 
 // Senaryo başlığını bul (Scenario: ... satırı)
@@ -520,6 +522,60 @@ function updateAutocompleteSelection() {
         }
     });
 }
+
+function clearGherkinScenarios() {
+    try {
+        const confirmed = confirm('Saved scenarios will be deleted. Are you sure?');
+        
+        if (confirmed) {
+            localStorage.removeItem('gherkin_scenarios');
+            console.log('Gherkin scenarios localStorage\'dan silindi');
+            
+            refreshPage();
+        }
+    } catch (error) {
+        console.error('Storage silme hatası:', error);
+        alert('Error: A problem occurred while deleting storage.');
+    }
+}
+function refreshPage() {
+    location.reload();
+}
+function updateScenarioCount() {
+    try {
+        const scenarios = localStorage.getItem('gherkin_scenarios');
+        let count = 0;
+        
+        if (scenarios) {
+            const parsedScenarios = JSON.parse(scenarios);
+            count = Array.isArray(parsedScenarios) ? parsedScenarios.length : 0;
+        }
+        
+        const countElement = document.getElementById('scenario-count');
+        if (countElement) {
+            countElement.textContent = `(${count})`;
+        }
+        
+        return count;
+    } catch (error) {
+        console.error('Senaryo sayısı hesaplanamadı:', error);
+        const countElement = document.getElementById('scenario-count');
+        if (countElement) {
+            countElement.textContent = '(?)';
+        }
+        return 0;
+    }
+}
+window.addEventListener('DOMContentLoaded', function() {
+    updateScenarioCount();
+});
+
+// localStorage değişikliklerini dinle (başka sekmelerden değişiklikler için)
+window.addEventListener('storage', function(e) {
+    if (e.key === 'gherkin_scenarios') {
+        updateScenarioCount();
+    }
+});
 
 // --- CSS ile parametre renklendirme için stil ekle ---
 (function addParamStyle() {
